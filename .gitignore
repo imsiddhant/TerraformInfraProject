@@ -1,0 +1,8 @@
+# IgnoretheModules and local state
+**/.terraform/*
+
+.terraform.lock.hcl
+**/terraform.lock.hcl
+
+*.tfstate
+*.tfstate.*
