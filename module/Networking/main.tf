@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 resource "aws_vpc" "mainvpc" {
-  cidr_block = "192.168.10.0/27"
+  cidr_block = "192.168.10.0/24"
 }
 
 resource "aws_subnet" "PrivateSubnet" {
