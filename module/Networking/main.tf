@@ -18,7 +18,7 @@ resource "aws_vpc" "mainvpc" {
 resource "aws_subnet" "PrivateSubnet" {
   vpc_id = aws_vpc.mainvpc.id
   cidr_block = "192.168.10.0/27"
-  availability_zone = "us-wast-1a"
+  availability_zone = "us-east-1a"
   map_public_ip_on_launch = false
   depends_on = [ aws_vpc.mainvpc ]
 }
@@ -26,7 +26,7 @@ resource "aws_subnet" "PrivateSubnet" {
 resource "aws_subnet" "PublicSubnet" {
   vpc_id = aws_vpc.mainvpc.id
   cidr_block = "192.168.10.32/27"
-  availability_zone = "us-wast-1b"
+  availability_zone = "us-east-1b"
   map_public_ip_on_launch = true
   depends_on = [ aws_vpc.mainvpc ]
 }
