@@ -1,4 +1,4 @@
-# This file stores the Variables for Networking Module
+# This file stores the Variables for Compute Module
 
 variable "region" {
   type    = string

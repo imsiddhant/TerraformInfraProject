@@ -22,3 +22,8 @@ module "Networking" {
   source = "./module/Networking"
   region = var.region_main
 }
+
+module "Compute" {
+  source = "./module/Compute"
+  region = var.region_main
+}
