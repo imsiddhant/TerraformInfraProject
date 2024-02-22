@@ -73,12 +73,6 @@ resource "aws_lb_listener" "FrontEnd" {
   depends_on = [aws_lb_target_group.ProdTG]
 }
 
-resource "aws_autoscaling_attachment" "ELB" {
-  autoscaling_group_name = aws_autoscaling_group.ProdASG.id
-  elb                    = aws_lb.ProdLB.id
-  depends_on             = [aws_lb.ProdLB]
-}
-
 resource "aws_autoscaling_attachment" "TG" {
   autoscaling_group_name = aws_autoscaling_group.ProdASG.id
   lb_target_group_arn    = aws_lb_target_group.ProdTG.arn
