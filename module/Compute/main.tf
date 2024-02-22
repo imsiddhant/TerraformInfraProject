@@ -11,7 +11,7 @@ provider "aws" {
   }
 }
 
-module "Networking"{
+module "Networking" {
   source = "../Networking"
 }
 
@@ -28,6 +28,7 @@ resource "aws_launch_template" "LT_main" {
   instance_type          = "t2.micro"
   image_id               = data.aws_ami.LatestAMI.image_id
   vpc_security_group_ids = [module.Networking.internal_sg_id]
+  depends_on             = [module.Networking.FromALBOnly]
 }
 
 resource "aws_autoscaling_group" "ProdASG" {
@@ -44,20 +45,21 @@ resource "aws_autoscaling_group" "ProdASG" {
   depends_on = [aws_launch_template.LT_main]
 }
 
+resource "aws_lb_target_group" "ProdTG" {
+  name       = "Prod-Target-80"
+  port       = 80
+  protocol   = "HTTP"
+  vpc_id     = module.Networking.main_vpc_id
+  depends_on = [aws_autoscaling_group.ProdASG]
+}
+
 resource "aws_lb" "ProdLB" {
   name               = "ProdLB"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [module.Networking.external_sg_id]
   subnets            = [module.Networking.public_subnet_1, module.Networking.public_subnet_2]
-  depends_on         = [aws_autoscaling_group.ProdASG]
-}
-
-resource "aws_lb_target_group" "ProdTG" {
-  name     = "Prod-Target-80"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = module.Networking.main_vpc_id
+  depends_on         = [ aws_lb_target_group.ProdTG ]
 }
 
 resource "aws_lb_listener" "FrontEnd" {
