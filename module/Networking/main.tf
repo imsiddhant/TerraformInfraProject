@@ -85,7 +85,9 @@ resource "aws_security_group" "AllowPublic" {
 resource "aws_vpc_security_group_ingress_rule" "AllowPublicHTTP" {
   security_group_id = aws_security_group.AllowPublic.id
   cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "80"
+  ip_protocol       = "tcp"
+  from_port         = 80
+  to_port           = 80
   depends_on        = [aws_security_group.AllowPublic]
 }
 

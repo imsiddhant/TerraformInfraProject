@@ -24,7 +24,7 @@ resource "aws_launch_template" "LT_main" {
   instance_type          = "t2.micro"
   image_id               = data.aws_ami.LatestAMI.image_id
   vpc_security_group_ids = [var.ec2sg]
-  user_data = filebase64("${path.module}/app.sh")
+  user_data              = filebase64("${path.module}/app.sh")
 }
 
 resource "aws_autoscaling_group" "ProdASG" {
@@ -55,7 +55,7 @@ resource "aws_lb" "ProdLB" {
   load_balancer_type = "application"
   security_groups    = [var.albsg]
   subnets            = [var.publicsub1, var.publicsub2]
-  depends_on         = [ aws_lb_target_group.ProdTG ]
+  depends_on         = [aws_lb_target_group.ProdTG]
 }
 
 resource "aws_lb_listener" "FrontEnd" {

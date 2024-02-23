@@ -11,26 +11,26 @@ variable "tag_value" {
 }
 
 variable "vpc_id_main" {
-  type = string
+  type    = string
   default = "example_vpc_id"
 }
 
 variable "publicsub1" {
-  type = string
+  type    = string
   default = "example_pubsub_1"
 }
 
 variable "publicsub2" {
-  type = string
+  type    = string
   default = "example_pubsub_2"
 }
 
-variable "albsg"{
-  type = string
+variable "albsg" {
+  type    = string
   default = "example_albsg"
 }
 
 variable "ec2sg" {
-  type = string
+  type    = string
   default = "example_ec2sg"
 }
