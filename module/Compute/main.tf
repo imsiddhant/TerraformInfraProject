@@ -11,10 +11,6 @@ provider "aws" {
   }
 }
 
-module "Networking" {
-  source = "../Networking"
-}
-
 data "aws_ami" "LatestAMI" {
   most_recent = true
   owners      = ["amazon"]
@@ -27,15 +23,15 @@ data "aws_ami" "LatestAMI" {
 resource "aws_launch_template" "LT_main" {
   instance_type          = "t2.micro"
   image_id               = data.aws_ami.LatestAMI.image_id
-  vpc_security_group_ids = [module.Networking.internal_sg_id]
-  depends_on             = [module.Networking.FromALBOnly]
+  vpc_security_group_ids = [var.ec2sg]
+  user_data = filebase64("${path.module}/app.sh")
 }
 
 resource "aws_autoscaling_group" "ProdASG" {
   desired_capacity    = 1
   max_size            = 1
   min_size            = 1
-  vpc_zone_identifier = [module.Networking.public_subnet_1, module.Networking.public_subnet_2]
+  vpc_zone_identifier = [var.publicsub1, var.publicsub2]
 
   launch_template {
     id      = aws_launch_template.LT_main.id
@@ -49,7 +45,7 @@ resource "aws_lb_target_group" "ProdTG" {
   name       = "Prod-Target-80"
   port       = 80
   protocol   = "HTTP"
-  vpc_id     = module.Networking.main_vpc_id
+  vpc_id     = var.vpc_id_main
   depends_on = [aws_autoscaling_group.ProdASG]
 }
 
@@ -57,8 +53,8 @@ resource "aws_lb" "ProdLB" {
   name               = "ProdLB"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [module.Networking.external_sg_id]
-  subnets            = [module.Networking.public_subnet_1, module.Networking.public_subnet_2]
+  security_groups    = [var.albsg]
+  subnets            = [var.publicsub1, var.publicsub2]
   depends_on         = [ aws_lb_target_group.ProdTG ]
 }
 
