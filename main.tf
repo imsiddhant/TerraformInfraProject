@@ -35,9 +35,9 @@ module "Compute" {
 }
 
 module "Database" {
-  source     = "./module/Database"
-  region     = var.region_main
+  source      = "./module/Database"
+  region      = var.region_main
   vpc_id_main = module.Networking.main_vpc_id
-  ec2sg      = module.Networking.internal_sg_id
-  privatesub = module.Networking.private_subnet
+  ec2sg       = module.Networking.internal_sg_id
+  privatesub  = module.Networking.private_subnet
 }
