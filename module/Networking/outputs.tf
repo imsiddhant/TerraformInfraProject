@@ -12,6 +12,10 @@ output "public_rt_id" {
   value = aws_route_table.PublicRT
 }
 
+output "private_subnet" {
+  value = aws_subnet.PrivateSubnet.id
+}
+
 output "public_subnet_1" {
   value = aws_subnet.PublicSubnet1.id
 }

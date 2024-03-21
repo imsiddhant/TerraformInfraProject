@@ -1,4 +1,5 @@
 # Terraform Main File
+
 terraform {
   cloud {
     organization = "geekat7"
@@ -31,4 +32,11 @@ module "Compute" {
   publicsub2  = module.Networking.public_subnet_2
   albsg       = module.Networking.external_sg_id
   ec2sg       = module.Networking.internal_sg_id
+}
+
+module "Database" {
+  source     = "./module/Database"
+  region     = var.region_main
+  ec2sg      = module.Networking.internal_sg_id
+  privatesub = module.Networking.private_subnet
 }
