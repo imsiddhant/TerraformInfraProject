@@ -28,6 +28,10 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
+resource "aws_db_subnet_group" "default" {
+  subnet_ids = [var.privatesub]
+}
+
 resource "aws_db_instance" "maindatabase" {
   engine                 = "mysql"
   identifier             = "mainrdsinstance"
@@ -37,7 +41,7 @@ resource "aws_db_instance" "maindatabase" {
   username               = "mainrdsuser"
   password               = "myrdspassword"
   vpc_security_group_ids = ["${aws_security_group.rds_sg.id}"]
-  db_subnet_group_name   = var.privatesub
+  db_subnet_group_name   = "default"
   skip_final_snapshot    = false
   publicly_accessible    = false
 }
