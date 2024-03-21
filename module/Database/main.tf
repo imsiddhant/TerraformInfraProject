@@ -13,7 +13,7 @@ provider "aws" {
 
 resource "aws_security_group" "rds_sg" {
   name   = "allow_from_ec2"
-  vpc_id = aws_vpc.mainvpc.id
+  vpc_id = var.vpc_id_main
   ingress {
     from_port       = 3306
     to_port         = 3306
