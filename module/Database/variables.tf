@@ -10,6 +10,11 @@ variable "tag_value" {
   default = "TerraformInfraProject"
 }
 
+variable "vpc_id_main" {
+  type    = string
+  default = "example_vpc_id"
+}
+
 variable "ec2sg" {
   type    = string
   default = "example_ec2sg"
