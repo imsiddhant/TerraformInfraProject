@@ -20,7 +20,12 @@ variable "ec2sg" {
   default = "example_ec2sg"
 }
 
-variable "privatesub" {
+variable "privatesub1" {
+  type    = string
+  default = "private_subnet"
+}
+
+variable "privatesub2" {
   type    = string
   default = "private_subnet"
 }

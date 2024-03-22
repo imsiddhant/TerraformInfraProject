@@ -15,7 +15,7 @@ resource "aws_vpc" "mainvpc" {
   cidr_block = "192.168.10.0/24"
 }
 
-resource "aws_subnet" "PrivateSubnet" {
+resource "aws_subnet" "PrivateSubnet1" {
   vpc_id                  = aws_vpc.mainvpc.id
   cidr_block              = "192.168.10.0/27"
   availability_zone       = "us-east-1a"
@@ -23,18 +23,26 @@ resource "aws_subnet" "PrivateSubnet" {
   depends_on              = [aws_vpc.mainvpc]
 }
 
-resource "aws_subnet" "PublicSubnet1" {
+resource "aws_subnet" "PrivateSubnet2" {
   vpc_id                  = aws_vpc.mainvpc.id
   cidr_block              = "192.168.10.32/27"
   availability_zone       = "us-east-1b"
+  map_public_ip_on_launch = false
+  depends_on              = [aws_vpc.mainvpc]
+}
+
+resource "aws_subnet" "PublicSubnet1" {
+  vpc_id                  = aws_vpc.mainvpc.id
+  cidr_block              = "192.168.10.64/27"
+  availability_zone       = "us-east-1c"
   map_public_ip_on_launch = true
   depends_on              = [aws_vpc.mainvpc]
 }
 
 resource "aws_subnet" "PublicSubnet2" {
   vpc_id                  = aws_vpc.mainvpc.id
-  cidr_block              = "192.168.10.64/27"
-  availability_zone       = "us-east-1c"
+  cidr_block              = "192.168.10.128/27"
+  availability_zone       = "us-east-1d"
   map_public_ip_on_launch = true
   depends_on              = [aws_vpc.mainvpc]
 }
@@ -58,8 +66,14 @@ resource "aws_route_table" "PublicRT" {
   depends_on = [aws_internet_gateway.IGW]
 }
 
-resource "aws_route_table_association" "PriRT" {
-  subnet_id      = aws_subnet.PrivateSubnet.id
+resource "aws_route_table_association" "PriRT1" {
+  subnet_id      = aws_subnet.PrivateSubnet1.id
+  route_table_id = aws_route_table.PrivateRT.id
+  depends_on     = [aws_route_table.PrivateRT]
+}
+
+resource "aws_route_table_association" "PriRT2" {
+  subnet_id      = aws_subnet.PrivateSubnet2.id
   route_table_id = aws_route_table.PrivateRT.id
   depends_on     = [aws_route_table.PrivateRT]
 }

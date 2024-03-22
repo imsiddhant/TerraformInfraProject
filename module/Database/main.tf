@@ -28,6 +28,10 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
+resource "aws_db_subnet_group" "db_subnets" {
+  subnet_ids = [var.privatesub1, var.privatesub2]
+}
+
 resource "aws_db_instance" "maindatabase" {
   engine                 = "mysql"
   identifier             = "mainrdsinstance"
