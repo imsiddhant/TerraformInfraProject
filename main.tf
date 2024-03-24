@@ -24,16 +24,6 @@ module "Networking" {
   region = var.region_main
 }
 
-module "Compute" {
-  source      = "./module/Compute"
-  region      = var.region_main
-  vpc_id_main = module.Networking.main_vpc_id
-  publicsub1  = module.Networking.public_subnet_1
-  publicsub2  = module.Networking.public_subnet_2
-  albsg       = module.Networking.external_sg_id
-  ec2sg       = module.Networking.internal_sg_id
-}
-
 module "Database" {
   source      = "./module/Database"
   region      = var.region_main
@@ -41,4 +31,18 @@ module "Database" {
   ec2sg       = module.Networking.internal_sg_id
   privatesub1 = module.Networking.private_subnet_1
   privatesub2 = module.Networking.private_subnet_2
+}
+
+module "Compute" {
+  source            = "./module/Compute"
+  region            = var.region_main
+  vpc_id_main       = module.Networking.main_vpc_id
+  publicsub1        = module.Networking.public_subnet_1
+  publicsub2        = module.Networking.public_subnet_2
+  albsg             = module.Networking.external_sg_id
+  ec2sg             = module.Networking.internal_sg_id
+  DB_USER           = module.Database.Username
+  DB_PASSWORD_PARAM = module.Database.Password
+  DB_HOST           = module.Database.Host
+  DB_NAME           = module.Database.Name
 }

@@ -13,10 +13,10 @@ provider "aws" {
 
 data "aws_ami" "LatestAMI" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["099720109477"]
   filter {
     name   = "name"
-    values = ["a*-ami-202*-x86_64"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-disco-19.04-amd64-server-*"]
   }
 }
 
