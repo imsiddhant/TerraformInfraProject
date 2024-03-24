@@ -7,7 +7,7 @@ apt install awscli -y
 export GOROOT=/usr/lib/golang
 export GOPATH=$HOME/go-api-example
 export PATH=$PATH:$GOROOT/bin
-git clone <https://github.com/codeherk/go-api-example> /home/ubuntu/go-api-example
+git clone https://github.com/codeherk/go-api-example /home/ubuntu/go-api-example
 git checkout post-tasks
 DB_PASSWORD=$(aws ssm get-parameter --name ${DB_PASSWORD_PARAM} --region us-east-1 --with-decryption --output text --query Parameter.Value)
 mysql -h ${DB_HOST} -u ${DB_USER} ${DB_NAME} -p$DB_PASSWORD < /home/ubuntu/go-api-example/init.sql 
