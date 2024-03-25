@@ -4,6 +4,10 @@ output "Host" {
   value = aws_db_instance.maindatabase.address
 }
 
+output "dbname" {
+  value = aws_db_instance.maindatabase.db_name
+}
+
 output "Username" {
   value = aws_db_instance.maindatabase.username
 }

@@ -33,6 +33,7 @@ resource "aws_db_subnet_group" "db_subnets" {
 }
 
 resource "aws_db_instance" "maindatabase" {
+  db_name                = "maindb"
   engine                 = "mysql"
   identifier             = "mainrdsinstance"
   allocated_storage      = 20

@@ -13,14 +13,10 @@ provider "aws" {
 
 data "aws_ami" "LatestAMI" {
   most_recent = true
-  owners      = ["099720109477"]
+  owners      = ["amazon"]
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+    values = ["a*-ami-202*-x86_64"]
   }
 }
 

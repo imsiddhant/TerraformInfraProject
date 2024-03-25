@@ -44,5 +44,5 @@ module "Compute" {
   DB_USER           = module.Database.Username
   DB_PASSWORD_PARAM = module.Database.Password
   DB_HOST           = module.Database.Host
-  DB_NAME           = module.Database.Name
+  DB_NAME           = module.Database.dbname
 }
