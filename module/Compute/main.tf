@@ -25,6 +25,7 @@ resource "aws_launch_template" "LT_main" {
   image_id               = data.aws_ami.LatestAMI.image_id
   vpc_security_group_ids = [var.ec2sg]
   user_data              = filebase64("${path.module}/app.sh")
+  depends_on             = [var.DB_HOST]
 }
 
 resource "aws_autoscaling_group" "ProdASG" {
