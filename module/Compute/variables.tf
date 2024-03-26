@@ -35,27 +35,8 @@ variable "ec2sg" {
   default = "example_ec2sg"
 }
 
-variable "DB_HOST" {
-  type    = string
-  default = "hostname"
-}
-
-variable "DB_NAME" {
-  type    = string
-  default = "name"
-}
-
-variable "DB_PASSWORD_PARAM" {
-  type    = string
-  default = "password"
-}
-
-variable "DB_PORT" {
-  type    = string
-  default = "port"
-}
-
-variable "DB_USER" {
-  type    = string
-  default = "username"
-}
+variable "DB_USER" {}
+variable "DB_PASSWORD_PARAM" {}
+variable "DB_HOST" {}
+variable "DB_NAME" {}
+variable "DB_PORT" {}

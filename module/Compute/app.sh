@@ -14,10 +14,10 @@ cd inc
 
 cat > dbinfo.inc << EOL
 <?php
-define('DB_SERVER', ${DB_HOST});
-define('DB_USERNAME', ${DB_USER});
-define('DB_PASSWORD', ${DB_PASSWORD});
-define('DB_DATABASE', ${DB_NAME});
+define('DB_SERVER', '${DB_HOST}');
+define('DB_USERNAME', '${DB_USER}');
+define('DB_PASSWORD', '${DB_PASSWORD_PARAM}');
+define('DB_DATABASE', '${DB_NAME}');
 ?>
 EOL
 

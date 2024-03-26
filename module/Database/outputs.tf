@@ -1,7 +1,7 @@
 # This is whatever Terraform Database module pukes
 
 output "Host" {
-  value = aws_db_instance.maindatabase.address
+  value = aws_db_instance.maindatabase.endpoint
 }
 
 output "dbname" {
