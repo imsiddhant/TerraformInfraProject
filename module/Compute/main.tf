@@ -24,7 +24,13 @@ resource "aws_launch_template" "LT_main" {
   instance_type          = "t2.micro"
   image_id               = data.aws_ami.LatestAMI.image_id
   vpc_security_group_ids = [var.ec2sg]
-  user_data = filebase64("${path.module}/app.sh")
+  user_data = filebase64(templatefile("${path.module}/userdata/app.sh", {
+    DB_HOST           = var.DB_HOST
+    DB_USER           = var.DB_USER
+    DB_PASSWORD_PARAM = var.DB_PASSWORD_PARAM
+    DB_PORT           = var.DB_PORT
+    DB_NAME           = var.DB_NAME
+  }))
   depends_on = [var.DB_HOST]
 }
 
