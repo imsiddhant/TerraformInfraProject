@@ -31,6 +31,7 @@ resource "aws_launch_template" "LT_main" {
     DB_PORT           = var.DB_PORT
     DB_NAME           = var.DB_NAME
   }))
+  depends_on = [var.DB_HOST]
 }
 
 resource "aws_autoscaling_group" "ProdASG" {

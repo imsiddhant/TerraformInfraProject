@@ -15,3 +15,7 @@ Create a Terraform configuration to provision all the necessary infrastructure c
    - Launch EC2 instances to host the web application.
    - Use Auto Scaling Groups to ensure high availability and scalability.
    - Utilize Elastic Load Balancing for distributing incoming traffic.
+
+3. **Database Configuration:**
+   - Set up a managed database service like Amazon RDS for storing application data.
+   - Choose the appropriate database engine (e.g., MySQL, PostgreSQL) based on your application's requirements.
