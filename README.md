@@ -19,3 +19,6 @@ Create a Terraform configuration to provision all the necessary infrastructure c
 3. **Database Configuration:**
    - Set up a managed database service like Amazon RDS for storing application data.
    - Choose the appropriate database engine (e.g., MySQL, PostgreSQL) based on your application's requirements.
+
+4. **Security and Access Control:**
+   - Implement security groups to control inbound and outbound traffic to EC2 instances and databases.
