@@ -24,8 +24,8 @@ resource "aws_launch_template" "LT_main" {
   instance_type          = "t2.micro"
   image_id               = data.aws_ami.LatestAMI.image_id
   vpc_security_group_ids = [var.ec2sg]
-  user_data = base64encode(templatefile("module/Compute/userdata/app.sh", {
-    DB_HOST           = var.DB_HOST
+  user_data = base64encode(templatefile("${module.path}/userdata/app.sh", {
+    DB_HOST           = trimsuffix("${var.DB_HOST}", ":3306")
     DB_USER           = var.DB_USER
     DB_PASSWORD_PARAM = var.DB_PASSWORD_PARAM
     DB_PORT           = var.DB_PORT
