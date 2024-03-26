@@ -23,7 +23,7 @@ EOL
 
 cd /var/www/html
 
-cat > testdatabase.php << EOL
+cat>testdatabase.php<<'EOF'
 <?php include "../inc/dbinfo.inc"; ?>
 <html>
 <body>
@@ -144,6 +144,6 @@ function TableExists($tableName, $connection, $dbName) {
   return false;
 }
 ?>
-EOL
+EOF
 
 echo "Setup Completed!!!"
