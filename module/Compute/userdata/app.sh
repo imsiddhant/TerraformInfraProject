@@ -90,10 +90,12 @@ while($query_data = mysqli_fetch_row($result)) {
   echo "</tr>";
 }
 ?>
+
 </table>
 
 <!-- Clean up. -->
 <?php
+
   mysqli_free_result($result);
   mysqli_close($connection);
 
@@ -101,6 +103,7 @@ while($query_data = mysqli_fetch_row($result)) {
 
 </body>
 </html>
+
 
 <?php
 
