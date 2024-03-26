@@ -45,4 +45,5 @@ module "Compute" {
   DB_PASSWORD_PARAM = module.Database.Password
   DB_HOST           = module.Database.Host
   DB_NAME           = module.Database.dbname
+  DB_PORT           = module.Database.Port
 }
