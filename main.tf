@@ -47,3 +47,10 @@ module "Compute" {
   DB_NAME           = module.Database.dbname
   DB_PORT           = module.Database.Port
 }
+
+module "Monitoring" {
+  source      = "./module/Monitoring"
+  region      = var.region_main
+  asg_name    = module.Compute.ASG_Name
+  db_identity = module.Database.Identifier
+}

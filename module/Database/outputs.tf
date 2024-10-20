@@ -23,3 +23,7 @@ output "Port" {
 output "Name" {
   value = aws_db_instance.maindatabase.db_name
 }
+
+output "Identifier" {
+  value = aws_db_instance.maindatabase.identifier
+}

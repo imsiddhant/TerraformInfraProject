@@ -7,3 +7,7 @@ output "ASG_ARN" {
 output "ALB_ARN" {
   value = aws_lb.ProdLB.arn
 }
+
+output "ASG_Name" {
+  value = aws_autoscaling_group.ProdASG.name
+}
