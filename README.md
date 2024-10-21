@@ -75,19 +75,19 @@ TerraformInfraProject/
 - Networking Setup
 1. Create a Virtual Private Cloud (VPC) with public and private subnets.
 2. Configure route tables and internet gateways for public subnet access.
-
+##
 - Compute Resources
 1. Launch EC2 instances to host the web application.
 2. Use Auto Scaling Groups to ensure high availability and scalability.
 3. Utilize Elastic Load Balancing for distributing incoming traffic.
-
+##
 - Database Configuration
 1. Set up a managed database service like Amazon RDS for storing application data.
 2. Choose the appropriate database engine (e.g., MySQL, PostgreSQL) based on your application's requirements.
-
+##
 - Security and Access Control
 1. Implement security groups to control inbound and outbound traffic to EC2 instances and databases.
-
+##
 - Monitoring
 1. Set up an SNS topic with an email subscription for notifications.
 2. Configure CloudWatch alarms to monitor the health of Compute and Database resources.
@@ -97,30 +97,22 @@ TerraformInfraProject/
 1. Modify variables.tf to set your desired configurations.
 
 2. Initialize Terraform:
-```
-bash
-Copy code
+```bash
 terraform init
 ```
 
 3. Plan the infrastructure deployment:
-```
-bash
-Copy code
+```bash
 terraform plan
 ```
 
 4. Apply the configuration to create resources:
-```
-bash
-Copy code
+```bash
 terraform apply
 ```
 
 5. To destroy the infrastructure when it's no longer needed:
-```
-bash
-Copy code
+```bash
 terraform destroy
 ```
 
