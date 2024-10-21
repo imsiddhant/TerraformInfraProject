@@ -1,5 +1,3 @@
-=========================================================================
-
 # Terraform Infrastructure Project
 
 **Automated Infrastructure Provisioning for a Multi-Tier Web Application**
@@ -119,4 +117,5 @@ terraform destroy
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or features you'd like to see.
 
-=========================================================================
+Please feel free to reach out to me on [Instagram](https://www.instagram.com/geekat07) for any further queries or concerns.
+Thank you.
