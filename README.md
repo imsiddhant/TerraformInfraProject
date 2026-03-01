@@ -6,6 +6,10 @@
 
 This project automates the provisioning of all necessary infrastructure components on AWS for hosting a multi tier web application using Terraform. It includes setting up networking, compute resources, databases, and security groups to ensure a scalable, secure, and efficient environment.
 
+## Why This Project
+
+Manually provisioning cloud infrastructure is time-consuming, error-prone, and hard to reproduce across environments. This project solves that by fully automating the deployment of a production-ready, multi-tier web application on AWS using Terraform covering networking, compute, database, and monitoring, so the entire stack can be spun up or torn down with a single command.
+
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
