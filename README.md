@@ -10,6 +10,9 @@ This project automates the provisioning of all necessary infrastructure componen
 
 Manually provisioning cloud infrastructure is time-consuming, error-prone, and hard to reproduce across environments. This project solves that by fully automating the deployment of a production-ready, multi-tier web application on AWS using Terraform covering networking, compute, database, and monitoring, so the entire stack can be spun up or torn down with a single command.
 
+![TerraformInfra](https://github.com/user-attachments/assets/e8263cce-03c8-498e-8a6c-614a198bfa32)
+##
+
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
@@ -121,8 +124,6 @@ terraform destroy
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or features you'd like to see.
 
-Please feel free to reach out to me on [Instagram](https://www.instagram.com/geekat07) for any further queries or concerns.
+Please feel free to reach out to me on [Instagram](https://www.instagram.com/geekat07) OR [LinkedIn](https://www.linkedin.com/in/imsiddhantin/) for any further queries or concerns.
 
 Thank you.
-
-================================================================================================================
