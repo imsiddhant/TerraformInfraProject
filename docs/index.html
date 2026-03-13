@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terraform Infrastructure Project</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3350;
+      --accent: #7c6af7;
+      --accent2: #56cfe1;
+      --text: #e2e4f0;
+      --muted: #8b90a8;
+      --code-bg: #141720;
+      --green: #56f08a;
+      --orange: #ffb347;
+      --red: #ff6b6b;
+      --sidebar-w: 260px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 0 0 2rem;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 1.4rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+    }
+
+    .sidebar-logo .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .nav-section {
+      padding: 1.2rem 1.2rem 0.3rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    #sidebar a {
+      display: block;
+      padding: 0.4rem 1.2rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+    }
+
+    #sidebar a:hover,
+    #sidebar a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: rgba(124,106,247,0.07);
+    }
+
+    /* ── Main content ── */
+    #content {
+      margin-left: var(--sidebar-w);
+      padding: 3rem 2.5rem 6rem;
+      max-width: calc(var(--sidebar-w) + 820px);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 2.5rem 2.5rem 2.5rem;
+      background: linear-gradient(135deg, #1a1d27 0%, #1e1a3a 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 250px; height: 250px;
+      background: radial-gradient(circle, rgba(124,106,247,0.15) 0%, transparent 70%);
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0.25rem 0.65rem;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-purple { background: rgba(124,106,247,0.2); color: var(--accent); border: 1px solid rgba(124,106,247,0.35); }
+    .badge-cyan   { background: rgba(86,207,225,0.15); color: var(--accent2); border: 1px solid rgba(86,207,225,0.3); }
+    .badge-green  { background: rgba(86,240,138,0.12); color: var(--green); border: 1px solid rgba(86,240,138,0.25); }
+    .badge-orange { background: rgba(255,179,71,0.12); color: var(--orange); border: 1px solid rgba(255,179,71,0.25); }
+
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(90deg, #fff 30%, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 600px;
+      font-size: 1rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Sections ── */
+    section { margin-bottom: 3.5rem; scroll-margin-top: 1.5rem; }
+
+    h2 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      color: #fff;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.6rem;
+      color: var(--text);
+    }
+
+    p { margin-bottom: 0.9rem; color: var(--muted); }
+
+    /* ── Code blocks ── */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem;
+      overflow-x: auto;
+      margin: 0.8rem 0 1.2rem;
+      font-size: 0.83rem;
+      line-height: 1.65;
+    }
+
+    code {
+      font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      color: #c8d3f5;
+    }
+
+    pre code { color: #c8d3f5; }
+
+    .inline-code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+      font-size: 0.82em;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      color: var(--accent2);
+    }
+
+    /* Syntax highlight helpers */
+    .kw  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .com { color: #546e7a; font-style: italic; }
+    .num { color: #f78c6c; }
+    .var { color: #89ddff; }
+    .fn  { color: var(--accent2); }
+
+    /* ── Cards grid ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.3rem;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover { border-color: var(--accent); }
+
+    .card-icon {
+      width: 38px; height: 38px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text); }
+    .card p  { font-size: 0.82rem; margin: 0; color: var(--muted); }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.855rem;
+    }
+
+    thead th {
+      background: var(--surface2);
+      padding: 0.65rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+    tbody td {
+      padding: 0.65rem 1rem;
+      color: var(--muted);
+    }
+
+    tbody td:first-child { color: var(--text); }
+
+    /* ── Steps ── */
+    .steps { counter-reset: step; list-style: none; margin: 1rem 0; }
+
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      align-items: flex-start;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .steps li .step-body { flex: 1; }
+    .steps li .step-title { font-weight: 600; color: var(--text); font-size: 0.95rem; }
+    .steps li .step-desc  { color: var(--muted); font-size: 0.85rem; margin-top: 0.2rem; }
+
+    /* ── Callout ── */
+    .callout {
+      display: flex;
+      gap: 0.9rem;
+      padding: 1rem 1.2rem;
+      border-radius: 10px;
+      margin: 1rem 0;
+      font-size: 0.875rem;
+    }
+
+    .callout-icon { font-size: 1.1rem; flex-shrink: 0; line-height: 1.5; }
+    .callout p { margin: 0; }
+
+    .callout-warn { background: rgba(255,179,71,0.1); border: 1px solid rgba(255,179,71,0.25); color: #ffd180; }
+    .callout-info { background: rgba(86,207,225,0.08); border: 1px solid rgba(86,207,225,0.2); color: #9ee8f5; }
+    .callout-tip  { background: rgba(86,240,138,0.08); border: 1px solid rgba(86,240,138,0.2); color: #9ef5bc; }
+
+    /* ── Architecture diagram ── */
+    .arch-diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      font-size: 0.82rem;
+      text-align: center;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .arch-row { display: flex; justify-content: center; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
+    .arch-box {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      min-width: 100px;
+    }
+
+    .arch-arrow { color: var(--muted); font-size: 1.2rem; }
+
+    .tier-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+
+    .tier-wrap {
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 0.8rem 1.5rem;
+      margin: 0.4rem 0;
+    }
+
+    .box-internet  { background: rgba(255,179,71,0.15);  color: var(--orange); border: 1px solid rgba(255,179,71,0.3); }
+    .box-alb       { background: rgba(124,106,247,0.15); color: var(--accent); border: 1px solid rgba(124,106,247,0.35); }
+    .box-ec2       { background: rgba(86,207,225,0.12);  color: var(--accent2); border: 1px solid rgba(86,207,225,0.3); }
+    .box-rds       { background: rgba(86,240,138,0.1);   color: var(--green); border: 1px solid rgba(86,240,138,0.25); }
+    .box-cw        { background: rgba(255,107,107,0.1);  color: var(--red); border: 1px solid rgba(255,107,107,0.25); }
+
+    /* ── File tree ── */
+    .file-tree {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 2;
+    }
+
+    .ft-dir  { color: var(--accent); font-weight: 600; }
+    .ft-file { color: var(--muted); }
+    .ft-note { color: #546e7a; font-style: italic; }
+
+    /* ── Module detail ── */
+    .module-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px 12px 0 0;
+      border-bottom: none;
+    }
+
+    .module-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .module-body {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0 0 12px 12px;
+      padding: 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .module-body p { font-size: 0.875rem; }
+
+    /* ── Top bar (mobile) ── */
+    #topbar {
+      display: none;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.8rem 1rem;
+      z-index: 200;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #menu-btn {
+      background: none; border: none; color: var(--text);
+      font-size: 1.4rem; cursor: pointer; padding: 0 4px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); transition: transform 0.25s; }
+      #sidebar.open { transform: translateX(0); }
+      #content { margin-left: 0; padding: 1.5rem 1rem 5rem; }
+      #topbar { display: flex; }
+      .hero h1 { font-size: 1.5rem; }
+      .hero-stats { gap: 1rem; }
+      .card-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Mobile top bar -->
+<div id="topbar">
+  <button id="menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
+  <span style="font-weight:700;font-size:0.9rem;">Terraform Infra Docs</span>
+  <span></span>
+</div>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <a class="sidebar-logo" href="#top">
+    <div class="logo-icon">TF</div>
+    <span>Terraform<br>Infra&nbsp;Project</span>
+  </a>
+
+  <div class="nav-section">Getting started</div>
+  <a href="#overview">Overview</a>
+  <a href="#why">Why this project</a>
+  <a href="#prerequisites">Prerequisites</a>
+  <a href="#quickstart">Quick start</a>
+
+  <div class="nav-section">Architecture</div>
+  <a href="#architecture">Architecture diagram</a>
+  <a href="#project-structure">Project structure</a>
+
+  <div class="nav-section">Modules</div>
+  <a href="#mod-networking">Networking</a>
+  <a href="#mod-compute">Compute</a>
+  <a href="#mod-database">Database</a>
+  <a href="#mod-monitoring">Monitoring</a>
+
+  <div class="nav-section">Reference</div>
+  <a href="#variables">Variables reference</a>
+  <a href="#outputs">Outputs reference</a>
+  <a href="#security">Security notes</a>
+  <a href="#contributing">Contributing</a>
+</nav>
+
+<!-- Content -->
+<main id="content" id="top">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="badge-row">
+      <span class="badge badge-purple">Terraform</span>
+      <span class="badge badge-cyan">AWS</span>
+      <span class="badge badge-green">IaC</span>
+      <span class="badge badge-orange">Multi-tier</span>
+    </div>
+    <h1>Terraform Infrastructure Project</h1>
+    <p>Automated provisioning of a production-ready, multi-tier web application on AWS — networking, compute, database, and monitoring — deployed with a single command.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-number">4</div><div class="stat-label">Modules</div></div>
+      <div class="stat"><div class="stat-number">4</div><div class="stat-label">AWS Services</div></div>
+      <div class="stat"><div class="stat-number">2</div><div class="stat-label">Availability Zones</div></div>
+      <div class="stat"><div class="stat-number">1</div><div class="stat-label">Command Deploy</div></div>
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <section id="overview">
+    <h2>Overview</h2>
+    <p>
+      This project automates the provisioning of all necessary AWS infrastructure for a multi-tier web application using Terraform.
+      It sets up networking, compute resources, a relational database, and CloudWatch monitoring — all reproducible from source code.
+    </p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon" style="background:rgba(124,106,247,0.15);">🌐</div>
+        <h4>Networking</h4>
+        <p>VPC, public/private subnets across 2 AZs, IGW, route tables, and security groups.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:rgba(86,207,225,0.12);">⚙️</div>
+        <h4>Compute</h4>
+        <p>Auto Scaling Group of EC2 instances behind an Application Load Balancer.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:rgba(86,240,138,0.1);">🗄️</div>
+        <h4>Database</h4>
+        <p>RDS MySQL 8.0 in private subnets with a dedicated security group.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:rgba(255,107,107,0.1);">📊</div>
+        <h4>Monitoring</h4>
+        <p>CloudWatch alarms for CPU and storage, with SNS email notifications.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why -->
+  <section id="why">
+    <h2>Why this project</h2>
+    <p>
+      Manually provisioning cloud infrastructure is time-consuming, error-prone, and hard to reproduce across environments.
+      This project solves that by fully automating the deployment of a production-ready stack on AWS:
+    </p>
+    <ul style="padding-left:1.5rem;color:var(--muted);line-height:2;">
+      <li>The entire stack spins up or tears down with <span class="inline-code">terraform apply</span> / <span class="inline-code">terraform destroy</span></li>
+      <li>All infrastructure is version-controlled and reviewable via pull requests</li>
+      <li>Modular design makes it easy to extend or reuse individual components</li>
+      <li>Multi-AZ deployment and auto scaling provide production-grade resilience</li>
+      <li>State is stored in Terraform Cloud for team-safe remote operations</li>
+    </ul>
+  </section>
+
+  <!-- Prerequisites -->
+  <section id="prerequisites">
+    <h2>Prerequisites</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tool</th><th>Version</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Terraform</td><td>≥ 1.9.x</td><td>Infrastructure provisioning</td></tr>
+          <tr><td>AWS CLI</td><td>v2</td><td>Authentication &amp; credential management</td></tr>
+          <tr><td>AWS Account</td><td>—</td><td>Target cloud provider</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Required IAM Permissions</h3>
+    <p>The AWS IAM user or role used by Terraform needs the following managed policies attached:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Policy</th><th>Reason</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="inline-code">AmazonEC2FullAccess</span></td><td>Create ALB, ASG, EC2 instances, security groups</td></tr>
+          <tr><td><span class="inline-code">AmazonRDSFullAccess</span></td><td>Create RDS instance and subnet groups</td></tr>
+          <tr><td><span class="inline-code">AmazonVPCFullAccess</span></td><td>Create VPC, subnets, route tables, IGW</td></tr>
+          <tr><td><span class="inline-code">CloudWatchFullAccess</span></td><td>Create CloudWatch alarms and SNS topics</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Configure AWS CLI</h3>
+    <pre><code><span class="fn">aws</span> configure
+<span class="com"># AWS Access Key ID:     &lt;your-key&gt;</span>
+<span class="com"># AWS Secret Access Key: &lt;your-secret&gt;</span>
+<span class="com"># Default region:        us-east-1</span>
+<span class="com"># Default output format: json</span></code></pre>
+  </section>
+
+  <!-- Quick start -->
+  <section id="quickstart">
+    <h2>Quick start</h2>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <div class="step-title">Clone the repository</div>
+          <pre><code><span class="fn">git</span> clone https://github.com/&lt;your-username&gt;/TerraformInfraProject.git
+<span class="fn">cd</span> TerraformInfraProject</code></pre>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Customize variables (optional)</div>
+          <div class="step-desc">Edit the variable defaults in each module's <span class="inline-code">variables.tf</span>, or pass them via a <span class="inline-code">terraform.tfvars</span> file.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Initialize Terraform</div>
+          <pre><code><span class="fn">terraform</span> init</code></pre>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Preview the execution plan</div>
+          <pre><code><span class="fn">terraform</span> plan</code></pre>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Apply and provision</div>
+          <pre><code><span class="fn">terraform</span> apply</code></pre>
+          <div class="step-desc">Terraform will prompt for confirmation. Type <span class="inline-code">yes</span> to proceed.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Tear down (when done)</div>
+          <pre><code><span class="fn">terraform</span> destroy</code></pre>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <p>State is stored in <strong>Terraform Cloud</strong> (organization: <span class="inline-code">geekat7</span>, workspace: <span class="inline-code">InfraProject</span>). Make sure you are authenticated with <span class="inline-code">terraform login</span> before running <span class="inline-code">terraform init</span>.</p>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section id="architecture">
+    <h2>Architecture diagram</h2>
+
+    <div class="arch-diagram">
+      <div style="margin-bottom:1rem;color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;">AWS — us-east-1</div>
+
+      <!-- Internet -->
+      <div class="arch-row">
+        <div class="arch-box box-internet">🌍<br>Internet</div>
+      </div>
+      <div class="arch-row"><span class="arch-arrow">↕ HTTP :80</span></div>
+
+      <!-- Public subnets / ALB -->
+      <div class="tier-wrap" style="border-color:rgba(124,106,247,0.3);">
+        <div class="tier-label">Public Subnets (us-east-1c &amp; 1d) — Tier 1: Load Balancer</div>
+        <div class="arch-row">
+          <div class="arch-box box-alb">⚖️ ALB<br><small>ProdLB</small></div>
+        </div>
+      </div>
+      <div class="arch-row"><span class="arch-arrow">↕ HTTP :80 (FromALBOnly SG)</span></div>
+
+      <!-- Public subnets / EC2 -->
+      <div class="tier-wrap" style="border-color:rgba(86,207,225,0.3);">
+        <div class="tier-label">Public Subnets (us-east-1c &amp; 1d) — Tier 2: Application (ASG)</div>
+        <div class="arch-row">
+          <div class="arch-box box-ec2">🖥️ EC2<br><small>Apache + PHP</small></div>
+          <div class="arch-box box-ec2">🖥️ EC2<br><small>Apache + PHP</small></div>
+        </div>
+      </div>
+      <div class="arch-row"><span class="arch-arrow">↕ MySQL :3306 (DB SG)</span></div>
+
+      <!-- Private subnets / RDS -->
+      <div class="tier-wrap" style="border-color:rgba(86,240,138,0.3);">
+        <div class="tier-label">Private Subnets (us-east-1a &amp; 1b) — Tier 3: Database</div>
+        <div class="arch-row">
+          <div class="arch-box box-rds">🗄️ RDS MySQL 8.0<br><small>mainrdsinstance</small></div>
+        </div>
+      </div>
+
+      <!-- Monitoring aside -->
+      <div style="margin-top:1.5rem;display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
+        <div class="arch-box box-cw" style="min-width:130px;">📊 CloudWatch<br><small>CPU + Storage alarms</small></div>
+        <div class="arch-arrow" style="align-self:center;">→</div>
+        <div class="arch-box box-cw" style="min-width:130px;">📧 SNS<br><small>Email alerts</small></div>
+      </div>
+    </div>
+
+    <h3>Traffic flow</h3>
+    <ol style="padding-left:1.5rem;color:var(--muted);line-height:2.2;">
+      <li>Users send HTTP requests to the <strong>ALB DNS name</strong> on port 80.</li>
+      <li>The ALB forwards traffic to healthy EC2 targets in the <strong>target group</strong>.</li>
+      <li>EC2 instances (Apache + PHP) handle the request and query <strong>RDS MySQL</strong> in the private subnets.</li>
+      <li><strong>CloudWatch</strong> monitors CPU (EC2) and free storage (RDS), sending SNS email alerts on threshold breaches.</li>
+    </ol>
+  </section>
+
+  <!-- Project structure -->
+  <section id="project-structure">
+    <h2>Project structure</h2>
+    <div class="file-tree">
+<span class="ft-dir">TerraformInfraProject/</span>
+├── <span class="ft-file">main.tf</span>           <span class="ft-note"># Root: provider, backend, module wiring</span>
+├── <span class="ft-file">.terraform.lock.hcl</span>  <span class="ft-note"># Provider version lock</span>
+├── <span class="ft-file">.gitignore</span>
+│
+└── <span class="ft-dir">module/</span>
+    ├── <span class="ft-dir">Networking/</span>
+    │   ├── <span class="ft-file">main.tf</span>       <span class="ft-note"># VPC, subnets, IGW, route tables, SGs</span>
+    │   ├── <span class="ft-file">variables.tf</span>
+    │   └── <span class="ft-file">outputs.tf</span>
+    │
+    ├── <span class="ft-dir">Compute/</span>
+    │   ├── <span class="ft-file">main.tf</span>       <span class="ft-note"># Launch template, ASG, ALB, target group</span>
+    │   ├── <span class="ft-file">variables.tf</span>
+    │   ├── <span class="ft-file">outputs.tf</span>
+    │   └── <span class="ft-file">app.sh</span>        <span class="ft-note"># EC2 user-data: install Apache, PHP, app</span>
+    │
+    ├── <span class="ft-dir">Database/</span>
+    │   ├── <span class="ft-file">main.tf</span>       <span class="ft-note"># RDS MySQL, subnet group, security group</span>
+    │   ├── <span class="ft-file">variables.tf</span>
+    │   └── <span class="ft-file">outputs.tf</span>
+    │
+    └── <span class="ft-dir">Monitoring/</span>
+        ├── <span class="ft-file">main.tf</span>       <span class="ft-note"># CloudWatch alarms, SNS topic + subscription</span>
+        ├── <span class="ft-file">variables.tf</span>
+        └── <span class="ft-file">outputs.tf</span>
+    </div>
+  </section>
+
+  <!-- Module: Networking -->
+  <section id="mod-networking">
+    <h2>Module — Networking</h2>
+    <p>Creates the VPC foundation that all other modules depend on.</p>
+
+    <div class="module-header">
+      <div class="module-icon" style="background:rgba(124,106,247,0.15);">🌐</div>
+      <div>
+        <div style="font-weight:700;">module/Networking</div>
+        <div style="font-size:0.8rem;color:var(--muted);">VPC · Subnets · IGW · Route Tables · Security Groups</div>
+      </div>
+    </div>
+    <div class="module-body">
+
+      <h3>Resources created</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Resource</th><th>Name / CIDR</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>aws_vpc</td><td>192.168.10.0/24</td><td>Main VPC</td></tr>
+            <tr><td>aws_subnet (private)</td><td>192.168.10.0/27 (1a)</td><td>Private subnet 1</td></tr>
+            <tr><td>aws_subnet (private)</td><td>192.168.10.32/27 (1b)</td><td>Private subnet 2</td></tr>
+            <tr><td>aws_subnet (public)</td><td>192.168.10.64/27 (1c)</td><td>Public subnet 1</td></tr>
+            <tr><td>aws_subnet (public)</td><td>192.168.10.128/27 (1d)</td><td>Public subnet 2</td></tr>
+            <tr><td>aws_internet_gateway</td><td>—</td><td>Attached to VPC</td></tr>
+            <tr><td>aws_route_table (public)</td><td>0.0.0.0/0 → IGW</td><td>Associated with public subnets</td></tr>
+            <tr><td>aws_route_table (private)</td><td>No internet route</td><td>Associated with private subnets</td></tr>
+            <tr><td>aws_security_group (AllowPublic)</td><td>Inbound :80 from 0.0.0.0/0</td><td>Used by ALB</td></tr>
+            <tr><td>aws_security_group (FromALBOnly)</td><td>Inbound :80 from AllowPublic SG</td><td>Used by EC2 instances</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Key Terraform snippet</h3>
+      <pre><code><span class="kw">resource</span> <span class="str">"aws_vpc"</span> <span class="str">"main"</span> {
+  cidr_block           = <span class="str">"192.168.10.0/24"</span>
+  enable_dns_support   = <span class="kw">true</span>
+  enable_dns_hostnames = <span class="kw">true</span>
+}</code></pre>
+    </div>
+  </section>
+
+  <!-- Module: Compute -->
+  <section id="mod-compute">
+    <h2>Module — Compute</h2>
+    <p>Provisions the application tier: EC2 instances behind an Application Load Balancer, managed by an Auto Scaling Group.</p>
+
+    <div class="module-header">
+      <div class="module-icon" style="background:rgba(86,207,225,0.12);">⚙️</div>
+      <div>
+        <div style="font-weight:700;">module/Compute</div>
+        <div style="font-size:0.8rem;color:var(--muted);">Launch Template · ASG · ALB · Target Group · Listener</div>
+      </div>
+    </div>
+    <div class="module-body">
+
+      <h3>Resources created</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Resource</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr><td>aws_launch_template</td><td>t2.micro, latest Amazon Linux 2 AMI (x86_64)</td></tr>
+            <tr><td>aws_autoscaling_group</td><td>Desired 1, Min 1, Max 1 — spans both public subnets</td></tr>
+            <tr><td>aws_lb (ALB)</td><td>Internet-facing, name: ProdLB, public subnets</td></tr>
+            <tr><td>aws_lb_target_group</td><td>Prod-Target-80, HTTP :80</td></tr>
+            <tr><td>aws_lb_listener</td><td>HTTP :80 → forward to target group</td></tr>
+            <tr><td>aws_autoscaling_attachment</td><td>Wires ASG to the ALB target group</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>User-data script (app.sh)</h3>
+      <p>The EC2 instances run <span class="inline-code">app.sh</span> on first boot, which:</p>
+      <ul style="padding-left:1.5rem;color:var(--muted);line-height:2;">
+        <li>Updates system packages via <span class="inline-code">dnf</span></li>
+        <li>Installs Apache httpd, PHP, php-mysqli, and MariaDB client</li>
+        <li>Starts and enables the <span class="inline-code">httpd</span> service</li>
+        <li>Writes <span class="inline-code">/var/www/inc/dbinfo.inc</span> with RDS connection parameters</li>
+        <li>Creates a <span class="inline-code">testdatabase.php</span> page that reads/writes an EMPLOYEES table</li>
+      </ul>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <p>After provisioning, access the demo app at the ALB DNS name output by <span class="inline-code">terraform output</span> on path <strong>/testdatabase.php</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module: Database -->
+  <section id="mod-database">
+    <h2>Module — Database</h2>
+    <p>Provisions a managed MySQL 8.0 RDS instance in private subnets, accessible only from EC2 instances.</p>
+
+    <div class="module-header">
+      <div class="module-icon" style="background:rgba(86,240,138,0.1);">🗄️</div>
+      <div>
+        <div style="font-weight:700;">module/Database</div>
+        <div style="font-size:0.8rem;color:var(--muted);">RDS MySQL · DB Subnet Group · Security Group</div>
+      </div>
+    </div>
+    <div class="module-body">
+
+      <h3>RDS configuration</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Engine</td><td>MySQL 8.0.35</td></tr>
+            <tr><td>Instance class</td><td>db.t3.micro</td></tr>
+            <tr><td>Storage</td><td>20 GB (gp2)</td></tr>
+            <tr><td>Database name</td><td>maindb</td></tr>
+            <tr><td>Identifier</td><td>mainrdsinstance</td></tr>
+            <tr><td>Publicly accessible</td><td>false</td></tr>
+            <tr><td>Multi-AZ</td><td>Subnet group spans 2 private subnets</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Network security</h3>
+      <p>The RDS security group allows inbound traffic on port <span class="inline-code">3306</span> exclusively from the EC2 security group (<span class="inline-code">FromALBOnly</span>). No direct internet access is possible.</p>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <p>The database username and password are currently hardcoded. For production use, migrate these to <strong>AWS Secrets Manager</strong> or Terraform input variables with a <span class="inline-code">.tfvars</span> file that is not committed to version control.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module: Monitoring -->
+  <section id="mod-monitoring">
+    <h2>Module — Monitoring</h2>
+    <p>Sets up CloudWatch alarms and SNS email notifications to alert on resource health.</p>
+
+    <div class="module-header">
+      <div class="module-icon" style="background:rgba(255,107,107,0.1);">📊</div>
+      <div>
+        <div style="font-weight:700;">module/Monitoring</div>
+        <div style="font-size:0.8rem;color:var(--muted);">CloudWatch Alarms · SNS Topic · Email Subscription</div>
+      </div>
+    </div>
+    <div class="module-body">
+
+      <h3>CloudWatch alarms</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Alarm</th><th>Metric</th><th>Threshold</th><th>Periods</th></tr></thead>
+          <tbody>
+            <tr><td>ASG_CPU_Alarm</td><td>CPUUtilization (EC2)</td><td>&gt; 80%</td><td>2 × 60 s</td></tr>
+            <tr><td>RDS_LowStorage</td><td>FreeStorageSpace (RDS)</td><td>&lt; 10 GB</td><td>2 × 60 s</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>SNS notifications</h3>
+      <p>Both alarms publish to a single SNS topic (<span class="inline-code">default-sns-topic</span>). An email subscription is created automatically. The subscriber must <strong>confirm the subscription</strong> via the confirmation email sent by AWS after apply.</p>
+    </div>
+  </section>
+
+  <!-- Variables reference -->
+  <section id="variables">
+    <h2>Variables reference</h2>
+
+    <h3>Root module (main.tf)</h3>
+    <p>The root module does not expose input variables directly — all configuration is passed to child modules via module arguments.</p>
+
+    <h3>module/Networking</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>region</td><td>us-east-1</td><td>AWS region</td></tr>
+          <tr><td>tag_value</td><td>TerraformInfraProject</td><td>Value applied to all resource Name tags</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>module/Database</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Variable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>region, tag_value</td><td>Same as Networking</td></tr>
+          <tr><td>vpc_id_main</td><td>VPC ID (from Networking output)</td></tr>
+          <tr><td>ec2sg</td><td>EC2 security group ID (from Networking output)</td></tr>
+          <tr><td>privatesub1, privatesub2</td><td>Private subnet IDs (from Networking output)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>module/Compute</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Variable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>region, tag_value</td><td>Same as Networking</td></tr>
+          <tr><td>vpc_id_main</td><td>VPC ID</td></tr>
+          <tr><td>publicsub1, publicsub2</td><td>Public subnet IDs</td></tr>
+          <tr><td>albsg, ec2sg</td><td>ALB and EC2 security group IDs</td></tr>
+          <tr><td>DB_USER, DB_PASSWORD_PARAM</td><td>RDS credentials (from Database output)</td></tr>
+          <tr><td>DB_HOST, DB_NAME, DB_PORT</td><td>RDS connection details (from Database output)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>module/Monitoring</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Variable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>region, tag_value</td><td>Same as Networking</td></tr>
+          <tr><td>asg_name</td><td>ASG name (from Compute output)</td></tr>
+          <tr><td>db_identity</td><td>RDS instance identifier (from Database output)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Outputs reference -->
+  <section id="outputs">
+    <h2>Outputs reference</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Module</th><th>Output</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Networking</td><td>main_vpc_id</td><td>VPC ID</td></tr>
+          <tr><td>Networking</td><td>private_subnet_1, private_subnet_2</td><td>Private subnet IDs</td></tr>
+          <tr><td>Networking</td><td>public_subnet_1, public_subnet_2</td><td>Public subnet IDs</td></tr>
+          <tr><td>Networking</td><td>internal_sg_id</td><td>EC2 (FromALBOnly) security group ID</td></tr>
+          <tr><td>Networking</td><td>external_sg_id</td><td>ALB (AllowPublic) security group ID</td></tr>
+          <tr><td>Database</td><td>Host</td><td>RDS endpoint</td></tr>
+          <tr><td>Database</td><td>dbname, Username, Password, Port</td><td>Connection credentials</td></tr>
+          <tr><td>Database</td><td>Identifier</td><td>RDS instance identifier</td></tr>
+          <tr><td>Compute</td><td>ASG_Name</td><td>Auto Scaling Group name</td></tr>
+          <tr><td>Compute</td><td>ALB_ARN</td><td>ALB Amazon Resource Name</td></tr>
+          <tr><td>Compute</td><td>ASG_ARN</td><td>ASG Amazon Resource Name</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Security notes -->
+  <section id="security">
+    <h2>Security notes</h2>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚠️</span>
+      <p><strong>This project contains hardcoded secrets for demonstration purposes.</strong> Do not use it in production without addressing the items below.</p>
+    </div>
+
+    <h3>Known issues &amp; recommendations</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Issue</th><th>Recommendation</th></tr></thead>
+        <tbody>
+          <tr><td>Hardcoded RDS username &amp; password</td><td>Use AWS Secrets Manager and <span class="inline-code">data "aws_secretsmanager_secret_version"</span></td></tr>
+          <tr><td>Hardcoded SNS email address</td><td>Move to a Terraform input variable or <span class="inline-code">.tfvars</span> file</td></tr>
+          <tr><td>EC2 in public subnets</td><td>Move EC2 to private subnets; use a NAT Gateway for outbound internet access</td></tr>
+          <tr><td>No HTTPS on ALB</td><td>Add an HTTPS listener with an ACM certificate</td></tr>
+          <tr><td>ASG max = 1</td><td>Increase max capacity and configure scaling policies for production workloads</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Contributing -->
+  <section id="contributing">
+    <h2>Contributing</h2>
+    <p>Contributions are welcome! Please open an issue or submit a pull request on GitHub.</p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <div class="step-title">Fork the repository</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Create a feature branch</div>
+          <pre><code><span class="fn">git</span> checkout -b feature/my-improvement</code></pre>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Commit your changes</div>
+          <pre><code><span class="fn">git</span> commit -m "feat: describe your change"</code></pre>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Open a pull request</div>
+        </div>
+      </li>
+    </ol>
+
+    <h3>Author</h3>
+    <div class="card-grid" style="max-width:420px;">
+      <div class="card">
+        <h4>Siddhantin Gahtori</h4>
+        <p>
+          📸 Instagram: <a href="https://instagram.com/geekat07" style="color:var(--accent);">@geekat07</a><br>
+          💼 LinkedIn: <a href="https://linkedin.com/in/imsiddhantin" style="color:var(--accent);">imsiddhantin</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Sidebar active link highlighting
+  const sections = document.querySelectorAll('section[id], div.hero');
+  const links    = document.querySelectorAll('#sidebar a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const id = e.target.id || 'top';
+        const active = document.querySelector(`#sidebar a[href="#${id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // Close sidebar on link click (mobile)
+  document.querySelectorAll('#sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>
